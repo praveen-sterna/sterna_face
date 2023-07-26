@@ -195,6 +195,42 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
               ],
             ),
           ),
+        ),
+        Align(
+          alignment: Alignment.topCenter,
+          child: Padding(
+            padding: const EdgeInsets.all(50.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Visibility(
+                  visible: _msg == "Turn right",
+                  child: const Positioned(
+                      top: 72,
+                      right: 0,
+                      left: 0,
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Icon(Icons.arrow_back_rounded,size: 48,color: Colors.redAccent,),
+                      )
+                  ),
+                ),
+                Visibility(
+                  visible: _msg == "Turn left",
+                  child: const Positioned(
+                      top: 72,
+                      right: 0,
+                      left: 0,
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Icon(Icons.arrow_forward_rounded,size: 48,color: Colors.redAccent,),
+                      )
+                  ),
+                ),
+              ],
+            ),
+          ),
         )
       ],
     );
