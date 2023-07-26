@@ -23,7 +23,7 @@ class FaceHelpers{
     return formattedTime;
   }
 
-  static Future<Uint8List> convertNV21toImage(CameraImage image) async {
+  static Future<Uint8List> convertNV21toImage(CameraImage image, CameraLensDirection lensDirection) async {
     try {
       var width = image.width;
       var height = image.height;
@@ -47,7 +47,7 @@ class FaceHelpers{
         }
       }
       img_lib.JpegEncoder jpegEncoder = img_lib.JpegEncoder();
-      List<int> jpeg = jpegEncoder.encode(img_lib.copyRotate(img, angle: -90));
+      List<int> jpeg = jpegEncoder.encode(img_lib.copyRotate(img, angle: (lensDirection == CameraLensDirection.front) ? -90 : 90));
       return Uint8List.fromList(jpeg);
     } catch (e) {
       debugPrint('Error converting NV21 to image: $e');
