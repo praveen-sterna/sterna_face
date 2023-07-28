@@ -151,12 +151,16 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
         color: Colors.white,
       ),
     ) : Stack(
-      fit: StackFit.expand,
       children: [
-        CameraView(
-          customPaint: _customPaint,
-          onImage: _processImage,
-          initialCameraLensDirection: _cameraLensDirection,
+        Stack(
+          fit: StackFit.expand,
+          children: [
+            CameraView(
+              customPaint: _customPaint,
+              onImage: _processImage,
+              initialCameraLensDirection: _cameraLensDirection,
+            ),
+          ],
         ),
         Align(
           alignment: Alignment.bottomCenter,
