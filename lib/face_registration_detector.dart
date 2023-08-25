@@ -65,12 +65,10 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
 
   Future<void> faceNotFound() async{
     _msg = "No faces found";
-    setState(() {});
   }
 
   Future<void> multiFacesFound() async{
     _msg = "Multiple faces found";
-    setState(() {});
   }
 
   Future<void> faceFound(List<Face> faces, CameraImage image) async{
@@ -88,7 +86,6 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
       }else {
         _canProcess = false;
         _msg = "Perfect! Now, slightly Turn your head to right side";
-        setState(() {});
         _faceData.centerAngleInputImage = image;
         _faceData.centerFace = face;
         _angle = FaceAngle.right;
@@ -103,7 +100,6 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
         _faceData.rightAngleInputImage = image;
         _angle = FaceAngle.left;
         _canProcess = true;
-        setState(() {});
       }
     }else if(_angle == FaceAngle.left) {
       if((face.headEulerAngleY ?? 0.0) < 14 ){

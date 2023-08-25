@@ -64,12 +64,10 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
 
   Future<void> faceNotFound() async{
     _msg = "No faces found";
-    setState(() {});
   }
 
   Future<void> multiFacesFound() async{
     _msg = "Multiple faces found";
-    setState(() {});
   }
 
   Future<void> faceFound(List<Face> faces, CameraImage image) async{
