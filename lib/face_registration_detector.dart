@@ -9,7 +9,8 @@ import 'face_detector_painter.dart';
 
 class FaceRegistrationDetectorView extends StatefulWidget {
   final Function(FaceData) onSuccess;
-  const FaceRegistrationDetectorView({super.key, required this.onSuccess});
+  final CameraLensDirection cameraLensDirection;
+  const FaceRegistrationDetectorView({super.key, required this.onSuccess, required this.cameraLensDirection});
 
   @override
   State<FaceRegistrationDetectorView> createState() => _FaceRegistrationDetectorViewState();
@@ -29,7 +30,6 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
   bool _canProcess = true;
   bool _isBusy = false;
   CustomPaint? _customPaint;
-  final CameraLensDirection _cameraLensDirection = CameraLensDirection.back;
   final FaceData _faceData = FaceData();
   String _msg = "";
   bool _isCaptured = false;
@@ -48,7 +48,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
         _timer?.cancel();
         periodicTimer.cancel();
         FaceHelpers.showToast("Session expired");
-        //Navigator.pop(context);
+        Navigator.pop(context);
       } else {
         time = 300 - periodicTimer.tick;
         setState(() {});
@@ -139,7 +139,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
         faces,
         inputImage.metadata!.size,
         inputImage.metadata!.rotation,
-        _cameraLensDirection,
+        widget.cameraLensDirection,
       );
       _customPaint = CustomPaint(painter: painter);
     } else {
@@ -175,7 +175,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
         CameraView(
           customPaint: _customPaint,
           onImage: _processImage,
-          initialCameraLensDirection: _cameraLensDirection,
+          initialCameraLensDirection: widget.cameraLensDirection,
         ),
         Align(
           alignment: Alignment.bottomCenter,

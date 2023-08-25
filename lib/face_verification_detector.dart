@@ -9,7 +9,8 @@ import 'face_detector_painter.dart';
 
 class FaceVerificationDetectorView extends StatefulWidget {
   final Function(FaceData) onSuccess;
-  const FaceVerificationDetectorView({super.key, required this.onSuccess});
+  final CameraLensDirection cameraLensDirection;
+  const FaceVerificationDetectorView({super.key, required this.onSuccess, required this.cameraLensDirection});
 
   @override
   State<FaceVerificationDetectorView> createState() => _FaceVerificationDetectorViewState();
@@ -28,7 +29,6 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
   bool _canProcess = true;
   bool _isBusy = false;
   CustomPaint? _customPaint;
-  final CameraLensDirection _cameraLensDirection = CameraLensDirection.front;
   final FaceData _faceData = FaceData();
   String _msg = "";
   bool _isCaptured = false;
@@ -47,7 +47,7 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
         _timer?.cancel();
         periodicTimer.cancel();
         FaceHelpers.showToast("Session expired");
-        //Navigator.pop(context);
+        Navigator.pop(context);
       } else {
         time = 300 - periodicTimer.tick;
         setState(() {});
@@ -89,6 +89,7 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
           _msg = "Open your right eye";
         }else{
           _msg = "Thank you! We have captured your face identity data.";
+          setState(() {});
           _faceData.centerAngleInputImage = image;
           _dispose();
           _isCaptured = true;
@@ -119,7 +120,7 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
         faces,
         inputImage.metadata!.size,
         inputImage.metadata!.rotation,
-        _cameraLensDirection,
+        widget.cameraLensDirection,
       );
       _customPaint = CustomPaint(painter: painter);
     } else {
@@ -155,7 +156,7 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
         CameraView(
           customPaint: _customPaint,
           onImage: _processImage,
-          initialCameraLensDirection: _cameraLensDirection,
+          initialCameraLensDirection: widget.cameraLensDirection,
         ),
         Align(
           alignment: Alignment.bottomCenter,
