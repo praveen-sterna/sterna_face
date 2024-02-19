@@ -9,8 +9,7 @@ import 'face_detector_painter.dart';
 
 class FaceVerificationDetectorView extends StatefulWidget {
   final Function(FaceData) onSuccess;
-  final CameraLensDirection cameraLensDirection;
-  const FaceVerificationDetectorView({super.key, required this.onSuccess, required this.cameraLensDirection});
+  const FaceVerificationDetectorView({super.key, required this.onSuccess});
 
   @override
   State<FaceVerificationDetectorView> createState() => _FaceVerificationDetectorViewState();
@@ -34,6 +33,7 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
   bool _isCaptured = false;
   Timer? _timer;
   int time = 300;
+  final CameraLensDirection cameraLensDirection = CameraLensDirection.front;
 
   @override
   initState(){
@@ -118,7 +118,7 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
         faces,
         inputImage.metadata!.size,
         inputImage.metadata!.rotation,
-        widget.cameraLensDirection,
+        cameraLensDirection,
       );
       _customPaint = CustomPaint(painter: painter);
     } else {
@@ -154,7 +154,7 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
         CameraView(
           customPaint: _customPaint,
           onImage: _processImage,
-          initialCameraLensDirection: widget.cameraLensDirection,
+          initialCameraLensDirection: cameraLensDirection,
         ),
         Align(
           alignment: Alignment.bottomCenter,

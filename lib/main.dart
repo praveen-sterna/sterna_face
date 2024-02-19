@@ -19,7 +19,6 @@ class MyApp extends StatelessWidget {
          appBar: AppBar(),
          body: FaceVerificationDetectorView(
            onSuccess: (_){},
-           cameraLensDirection: CameraLensDirection.front,
          ),
        )
     );

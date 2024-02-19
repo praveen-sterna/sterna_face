@@ -9,8 +9,7 @@ import 'face_detector_painter.dart';
 
 class FaceRegistrationDetectorView extends StatefulWidget {
   final Function(FaceData) onSuccess;
-  final CameraLensDirection cameraLensDirection;
-  const FaceRegistrationDetectorView({super.key, required this.onSuccess, required this.cameraLensDirection});
+  const FaceRegistrationDetectorView({super.key, required this.onSuccess});
 
   @override
   State<FaceRegistrationDetectorView> createState() => _FaceRegistrationDetectorViewState();
@@ -35,6 +34,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
   bool _isCaptured = false;
   Timer? _timer;
   int time = 300;
+  final CameraLensDirection cameraLensDirection = CameraLensDirection.back;
 
   @override
   initState(){
@@ -135,7 +135,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
         faces,
         inputImage.metadata!.size,
         inputImage.metadata!.rotation,
-        widget.cameraLensDirection,
+        cameraLensDirection,
       );
       _customPaint = CustomPaint(painter: painter);
     } else {
@@ -171,7 +171,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
         CameraView(
           customPaint: _customPaint,
           onImage: _processImage,
-          initialCameraLensDirection: widget.cameraLensDirection,
+          initialCameraLensDirection: cameraLensDirection,
         ),
         Align(
           alignment: Alignment.bottomCenter,
