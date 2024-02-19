@@ -215,20 +215,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
           alignment: Alignment.topCenter,
           child: Padding(
             padding: const EdgeInsets.all(36.0),
-            child: (widget.cameraLensDirection == CameraLensDirection.front) ? Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Visibility(
-                    visible: _msg == "Turn left",
-                    child: const Icon(Icons.arrow_back_rounded,size: 48,color: Colors.redAccent,)
-                ),
-                Visibility(
-                  visible: _msg == "Turn right",
-                  child: const Icon(Icons.arrow_forward_rounded,size: 48,color: Colors.redAccent,),
-                ),
-              ],
-            ) : Column(
+            child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
