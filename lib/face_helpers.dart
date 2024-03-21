@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,8 +24,30 @@ class FaceHelpers{
     return formattedTime;
   }
 
+  static Future<Uint8List> _convertBGRA8888ToImage(CameraImage image, CameraLensDirection lensDirection) async {
+    final int width = image.width;
+    final int height = image.height;
+    var img = img_lib.Image(width: width, height: height);
+    final bgraBytes = image.planes[0].bytes;
+    for (int i = 0; i < width * height; i++) {
+      int pixelIndex = i * 4;
+      int blue = bgraBytes[pixelIndex];
+      int green = bgraBytes[pixelIndex + 1];
+      int red = bgraBytes[pixelIndex + 2];
+      int alpha = bgraBytes[pixelIndex + 3];
+      img.setPixelRgba(i % width, i ~/ width, red, green, blue, alpha);
+    }
+    img_lib.JpegEncoder jpegEncoder = img_lib.JpegEncoder();
+    List<int> jpeg = jpegEncoder.encode(img_lib.copyRotate(img, angle: (lensDirection == CameraLensDirection.front) ? -90 : 90));
+    return Uint8List.fromList(jpeg);
+  }
+
+
   static Future<Uint8List> convertNV21toImage(CameraImage image, CameraLensDirection lensDirection) async {
     try {
+      if(Platform.isIOS){
+        return await _convertBGRA8888ToImage(image, lensDirection);
+      }
       var width = image.width;
       var height = image.height;
       var nv21Data = image.planes[0].bytes;
