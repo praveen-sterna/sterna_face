@@ -38,7 +38,7 @@ class FaceHelpers{
       img.setPixelRgba(i % width, i ~/ width, red, green, blue, alpha);
     }
     img_lib.JpegEncoder jpegEncoder = img_lib.JpegEncoder();
-    List<int> jpeg = jpegEncoder.encode(img_lib.copyRotate(img, angle: (lensDirection == CameraLensDirection.front) ? 0 : 0));
+    List<int> jpeg = jpegEncoder.encode(img_lib.copyRotate(img, angle: 0));
     return Uint8List.fromList(jpeg);
   }
 
