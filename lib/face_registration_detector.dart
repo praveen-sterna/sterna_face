@@ -220,11 +220,11 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Visibility(
-                    visible: _msg == "Turn left",
+                    visible: _msg == "Turn right",
                     child: const Icon(Icons.arrow_forward_rounded,size: 48,color: Colors.redAccent,)
                 ),
                 Visibility(
-                  visible: _msg == "Turn right",
+                  visible: _msg == "Turn left",
                   child: const Icon(Icons.arrow_back_rounded,size: 48,color: Colors.redAccent,),
                 ),
               ],
