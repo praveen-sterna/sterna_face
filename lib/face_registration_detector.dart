@@ -92,7 +92,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
         _canProcess = true;
       }
     }else if(_angle == FaceAngle.right){
-      if((face.headEulerAngleY ?? 0.0) < 14 ){
+      if((face.headEulerAngleY ?? 0.0) > -14 ){
         _msg = "Turn right";
       }else{
         _canProcess = false;
@@ -102,7 +102,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
         _canProcess = true;
       }
     }else if(_angle == FaceAngle.left) {
-      if((face.headEulerAngleY ?? 0.0) > -14 ){
+      if((face.headEulerAngleY ?? 0.0) < 14 ){
         _msg = "Turn left";
       }else{
         _faceData.leftAngleInputImage = image;
@@ -220,11 +220,11 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Visibility(
-                    visible: _msg == "Turn right",
+                    visible: _msg == "Turn left",
                     child: const Icon(Icons.arrow_forward_rounded,size: 48,color: Colors.redAccent,)
                 ),
                 Visibility(
-                  visible: _msg == "Turn left",
+                  visible: _msg == "Turn right",
                   child: const Icon(Icons.arrow_back_rounded,size: 48,color: Colors.redAccent,),
                 ),
               ],
