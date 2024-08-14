@@ -67,10 +67,6 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
         rightAngleInputImage:  null,
         leftAngleInputImage: null
     );
-    await Future.delayed(const Duration(seconds: 3), (){
-      _isLoading = false;
-      setState(() {});
-    });
     _startTimer();
     _msg = "Hello ! Look straight on the camera";
     _canProcess = true;
@@ -176,6 +172,10 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
           customPaint: _customPaint,
           onImage: _processImage,
           initialCameraLensDirection: cameraLensDirection,
+          onCameraFeedReady: (){
+            _isLoading = false;
+            setState(() {});
+          },
         ),
         Align(
           alignment: Alignment.bottomCenter,
