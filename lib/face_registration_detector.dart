@@ -107,7 +107,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
       }else{
         _faceData.leftAngleInputImage = image;
         _msg = "Thank you! We have captured your face identity data.";
-        _dispose();
+        await _dispose();
         _isCaptured = true;
         setState(() {});
         widget.onSuccess(_faceData);
@@ -147,9 +147,9 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
     }
   }
 
-  void _dispose(){
+  Future<void> _dispose() async{
     _canProcess = false;
-    _faceDetector.close();
+    await _faceDetector.close();
     _timer?.cancel();
   }
 

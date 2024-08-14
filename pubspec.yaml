@@ -35,7 +35,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   google_mlkit_face_detection: ^0.11.0
-  camera: ^0.11.0+2
+  camera: 0.10.5+9
   image: ^4.2.0
   fluttertoast: ^8.2.4
 

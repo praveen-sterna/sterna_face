@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sterna_face/face_helpers.dart';
 import 'package:sterna_face/face_verification_detector.dart';
 
 void main(){
@@ -18,7 +19,9 @@ class MyApp extends StatelessWidget {
        home: Scaffold(
          appBar: AppBar(),
          body: FaceVerificationDetectorView(
-           onSuccess: (_){},
+           onSuccess: (_){
+             FaceHelpers.showToast("Face verified successfully");
+           },
          ),
        )
     );
