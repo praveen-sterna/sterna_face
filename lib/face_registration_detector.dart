@@ -40,7 +40,6 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
   Timer? _timer;
   int time = 300;
   final CameraLensDirection cameraLensDirection = CameraLensDirection.front;
-  bool _isLoading = true;
 
   @override
   initState(){
@@ -68,10 +67,6 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
         rightAngleInputImage:  null,
         leftAngleInputImage: null
     );
-    await Future.delayed(const Duration(seconds: 3), (){
-      _isLoading = false;
-      setState(() {});
-    });
     _startTimer();
     _msg = "Hello ! Look straight on the camera";
     _canProcess = true;
@@ -130,7 +125,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
   }
 
   Future<void> _processImage(InputImage inputImage, CameraImage image) async {
-    if (_isLoading || !_canProcess) return;
+    if (!_canProcess) return;
     if (_isBusy) return;
     _isBusy = true;
     final faces = await _faceDetector.processImage(inputImage);
@@ -175,9 +170,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading){
-      return const FaceDetectorLoader();
-    }else if(_isCaptured){
+    if(_isCaptured){
       return const Center(
         child: CircularProgressIndicator(
           strokeWidth: 3,
