@@ -23,6 +23,7 @@ class _CameraViewState extends State<CameraView> {
   static List<CameraDescription> _cameras = [];
   CameraController? _controller;
   int _cameraIndex = -1;
+  int _skipCameraImage = 3;
 
   @override
   void initState() {
@@ -72,7 +73,13 @@ class _CameraViewState extends State<CameraView> {
       if (!mounted) {
         return;
       }
-      _controller?.startImageStream(_processCameraImage).then((value) {});
+      _controller?.startImageStream((cameraImage) {
+        if (_skipCameraImage > 0) {
+          _skipCameraImage--;
+          return;
+        }
+        _processCameraImage(cameraImage);
+      }).then((value) {});
       setState(() {});
     });
   }
