@@ -114,7 +114,7 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
   }
 
   Future<void> _processImage(InputImage inputImage, CameraImage image) async {
-    if (!_canProcess) return;
+    if (_isLoading || !_canProcess) return;
     if (_isBusy) return;
     _isBusy = true;
     final faces = await _faceDetector.processImage(inputImage);
@@ -126,7 +126,7 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
       multiFacesFound();
     }else{
       debugPrint("-------face found------");
-      if(_isLoading)faceFound(faces, image);
+      faceFound(faces, image);
     }
     if (inputImage.metadata?.size != null && inputImage.metadata?.rotation != null) {
       final painter = FaceDetectorPainter(
