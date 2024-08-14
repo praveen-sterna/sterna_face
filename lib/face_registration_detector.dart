@@ -39,6 +39,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
   Timer? _timer;
   int time = 300;
   final CameraLensDirection cameraLensDirection = CameraLensDirection.front;
+  bool _isLoading = true;
 
   @override
   initState(){
@@ -66,6 +67,10 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
         rightAngleInputImage:  null,
         leftAngleInputImage: null
     );
+    await Future.delayed(const Duration(seconds: 3), (){
+      _isLoading = true;
+      setState(() {});
+    });
     _startTimer();
     _msg = "Hello ! Look straight on the camera";
     _canProcess = true;
@@ -136,7 +141,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
       multiFacesFound();
     }else{
       debugPrint("-------face found------");
-      faceFound(faces, image);
+      if(_isLoading)faceFound(faces, image);
     }
     if (inputImage.metadata?.size != null && inputImage.metadata?.rotation != null) {
       final painter = FaceDetectorPainter(
@@ -169,12 +174,34 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
 
   @override
   Widget build(BuildContext context) {
-    return (_isCaptured) ? const Center(
-      child: CircularProgressIndicator(
-        strokeWidth: 3,
-        color: Colors.white,
-      ),
-    ) : Stack(
+    if (_isLoading){
+      return Container(
+        width: double.infinity,
+        color: Colors.black,
+        alignment: Alignment.center,
+        padding: const EdgeInsets.all(16),
+        child: const Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(
+              strokeWidth: 3,
+              color: Colors.white,
+            ),
+            SizedBox(height: 16,),
+            Text("Initializing Camera", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16),)
+          ],
+        ),
+      );
+    }else if(_isCaptured){
+      return const Center(
+        child: CircularProgressIndicator(
+          strokeWidth: 3,
+          color: Colors.white,
+        ),
+      );
+    }
+    return Stack(
       children: [
         CameraView(
           customPaint: _customPaint,
