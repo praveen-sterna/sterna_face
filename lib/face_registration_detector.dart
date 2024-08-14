@@ -80,7 +80,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
     _msg = "Multiple faces found";
   }
 
-  Future<void> faceFound(List<Face> faces, InputImage inputImage) async{
+  Future<void> faceFound(List<Face> faces, CameraImage image) async{
     if(faces.isEmpty)return;
     final face =  faces.first;
     if((face.rightEyeOpenProbability ?? 0.0) < 0.5){
@@ -95,7 +95,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
       }else {
         _canProcess = false;
         _msg = "Perfect! Now, slightly Turn your head to right side";
-        _faceData.centerAngleInputImage = inputImage.bytes;
+        _faceData.centerAngleInputImage = await FaceHelpers.convertNV21toImage(image, cameraLensDirection);
         _angle = FaceAngle.right;
         _canProcess = true;
       }
@@ -105,7 +105,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
       }else{
         _canProcess = false;
         _msg = "Perfect! Now, slightly Turn your head to left side";
-        _faceData.rightAngleInputImage = inputImage.bytes;
+        _faceData.rightAngleInputImage = await FaceHelpers.convertNV21toImage(image, cameraLensDirection);
         _angle = FaceAngle.left;
         _canProcess = true;
       }
@@ -113,7 +113,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
       if((face.headEulerAngleY ?? 0.0) < 14 ){
         _msg = "Turn left";
       }else{
-        _faceData.leftAngleInputImage = inputImage.bytes;
+        _faceData.leftAngleInputImage = await FaceHelpers.convertNV21toImage(image, cameraLensDirection);
         _msg = "Thank you! We have captured your face identity data.";
         await _dispose();
         _isCaptured = true;
@@ -136,7 +136,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
       multiFacesFound();
     }else{
       debugPrint("-------face found------");
-      faceFound(faces, inputImage);
+      faceFound(faces, image);
     }
     if (inputImage.metadata?.size != null && inputImage.metadata?.rotation != null) {
       final painter = FaceDetectorPainter(

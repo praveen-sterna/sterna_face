@@ -80,7 +80,7 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
     _msg = "Multiple faces found";
   }
 
-  Future<void> faceFound(List<Face> faces, InputImage inputImage) async{
+  Future<void> faceFound(List<Face> faces, CameraImage image) async{
     if(faces.isEmpty)return;
     final face =  faces.first;
     if(!((face.headEulerAngleZ ?? 0.0) > -2 || (face.headEulerAngleZ ?? 0.0) < 2)){
@@ -98,7 +98,7 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
         }else{
           _msg = "Thank you! We have captured your face identity data.";
           setState(() {});
-          _faceData.centerAngleInputImage = inputImage.bytes;
+          _faceData.centerAngleInputImage = await FaceHelpers.convertNV21toImage(image, cameraLensDirection);
           await _dispose();
           _isCaptured = true;
           setState(() {});
@@ -121,7 +121,7 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
       multiFacesFound();
     }else{
       debugPrint("-------face found------");
-      faceFound(faces, inputImage);
+      faceFound(faces, image);
     }
     if (inputImage.metadata?.size != null && inputImage.metadata?.rotation != null) {
       final painter = FaceDetectorPainter(
