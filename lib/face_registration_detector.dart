@@ -184,6 +184,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
           customPaint: _customPaint,
           onImage: _processImage,
           initialCameraLensDirection: cameraLensDirection,
+          onCameraFeedReady: (){},
         ),
         Align(
           alignment: Alignment.bottomCenter,
