@@ -68,7 +68,7 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
         leftAngleInputImage: null
     );
     await Future.delayed(const Duration(seconds: 3), (){
-      _isLoading = true;
+      _isLoading = false;
       setState(() {});
     });
     _startTimer();

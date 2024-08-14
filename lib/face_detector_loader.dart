@@ -13,6 +13,7 @@ class FaceDetectorLoader extends StatelessWidget {
       child: const Column(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
             height: 25,
