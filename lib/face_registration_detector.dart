@@ -5,6 +5,7 @@ import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:sterna_face/face_helpers.dart';
 import 'camera.dart';
 import 'face_data.dart';
+import 'face_detector_loader.dart';
 import 'face_detector_painter.dart';
 
 class FaceRegistrationDetectorView extends StatefulWidget {
@@ -175,24 +176,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
   @override
   Widget build(BuildContext context) {
     if (_isLoading){
-      return Container(
-        width: double.infinity,
-        color: Colors.black,
-        alignment: Alignment.center,
-        padding: const EdgeInsets.all(16),
-        child: const Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(
-              strokeWidth: 3,
-              color: Colors.white,
-            ),
-            SizedBox(height: 16,),
-            Text("Initializing Camera", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16),)
-          ],
-        ),
-      );
+      return const FaceDetectorLoader();
     }else if(_isCaptured){
       return const Center(
         child: CircularProgressIndicator(
