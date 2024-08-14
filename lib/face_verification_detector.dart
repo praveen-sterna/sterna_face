@@ -130,9 +130,9 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
     }
   }
 
-  Future<void> _dispose() async{
+  void _dispose() {
     _canProcess = false;
-    await _faceDetector.close();
+    _faceDetector.close();
     _timer?.cancel();
   }
 
