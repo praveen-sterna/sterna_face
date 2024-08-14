@@ -39,7 +39,6 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
   Timer? _timer;
   int time = 300;
   final CameraLensDirection cameraLensDirection = CameraLensDirection.front;
-  bool _isLoading = true;
 
   @override
   initState(){
@@ -81,7 +80,7 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
     _msg = "Multiple faces found";
   }
 
-  Future<void> faceFound(List<Face> faces, CameraImage image) async{
+  Future<void> faceFound(List<Face> faces, InputImage inputImage) async{
     if(faces.isEmpty)return;
     final face =  faces.first;
     if(!((face.headEulerAngleZ ?? 0.0) > -2 || (face.headEulerAngleZ ?? 0.0) < 2)){
@@ -99,7 +98,7 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
         }else{
           _msg = "Thank you! We have captured your face identity data.";
           setState(() {});
-          _faceData.centerAngleInputImage = image;
+          _faceData.centerAngleInputImage = inputImage.bytes;
           await _dispose();
           _isCaptured = true;
           setState(() {});
@@ -114,7 +113,6 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
     if (_isBusy) return;
     _isBusy = true;
     final faces = await _faceDetector.processImage(inputImage);
-    if(_isLoading)return;
     if(faces.isEmpty){
       if(_msg != "No faces found") {
         faceNotFound();
@@ -123,7 +121,7 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
       multiFacesFound();
     }else{
       debugPrint("-------face found------");
-      faceFound(faces, image);
+      faceFound(faces, inputImage);
     }
     if (inputImage.metadata?.size != null && inputImage.metadata?.rotation != null) {
       final painter = FaceDetectorPainter(
@@ -156,9 +154,7 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading){
-      return const FaceDetectorLoader();
-    }else if(_isCaptured){
+    if(_isCaptured){
       return const Center(
         child: CircularProgressIndicator(
           strokeWidth: 3,
@@ -172,10 +168,6 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
           customPaint: _customPaint,
           onImage: _processImage,
           initialCameraLensDirection: cameraLensDirection,
-          onCameraFeedReady: (){
-            _isLoading = false;
-            setState(() {});
-          },
         ),
         Align(
           alignment: Alignment.bottomCenter,

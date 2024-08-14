@@ -9,12 +9,10 @@ class CameraView extends StatefulWidget {
       {super.key,
         required this.customPaint,
         required this.onImage,
-        required this.onCameraFeedReady,
         this.initialCameraLensDirection = CameraLensDirection.front});
 
   final CustomPaint? customPaint;
   final Function(InputImage inputImage, CameraImage image) onImage;
-  final Function() onCameraFeedReady;
   final CameraLensDirection initialCameraLensDirection;
 
   @override
@@ -74,9 +72,7 @@ class _CameraViewState extends State<CameraView> {
       if (!mounted) {
         return;
       }
-      _controller?.startImageStream(_processCameraImage).then((value) {
-        widget.onCameraFeedReady();
-      });
+      _controller?.startImageStream(_processCameraImage).then((value) {});
       setState(() {});
     });
   }
