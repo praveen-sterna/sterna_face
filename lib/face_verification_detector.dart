@@ -28,7 +28,11 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
   bool _canProcess = true;
   bool _isBusy = false;
   CustomPaint? _customPaint;
-  final FaceData _faceData = FaceData();
+  FaceData _faceData = FaceData(
+      centerAngleInputImage: null,
+      rightAngleInputImage:  null,
+      leftAngleInputImage: null
+  );
   String _msg = "";
   bool _isCaptured = false;
   Timer? _timer;
@@ -56,6 +60,11 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
   }
 
   Future<void> _init() async {
+    _faceData = FaceData(
+        centerAngleInputImage: null,
+        rightAngleInputImage:  null,
+        leftAngleInputImage: null
+    );
     _startTimer();
     _msg = "Hello ! Look straight on the camera";
     _canProcess = true;

@@ -29,7 +29,11 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
   bool _canProcess = true;
   bool _isBusy = false;
   CustomPaint? _customPaint;
-  final FaceData _faceData = FaceData();
+  FaceData _faceData = FaceData(
+    centerAngleInputImage: null,
+    rightAngleInputImage:  null,
+    leftAngleInputImage: null
+  );
   String _msg = "";
   bool _isCaptured = false;
   Timer? _timer;
@@ -57,6 +61,11 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
   }
 
   Future<void> _init() async {
+    _faceData = FaceData(
+        centerAngleInputImage: null,
+        rightAngleInputImage:  null,
+        leftAngleInputImage: null
+    );
     _startTimer();
     _msg = "Hello ! Look straight on the camera";
     _canProcess = true;
@@ -87,7 +96,6 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
         _canProcess = false;
         _msg = "Perfect! Now, slightly Turn your head to right side";
         _faceData.centerAngleInputImage = image;
-        _faceData.centerFace = face;
         _angle = FaceAngle.right;
         _canProcess = true;
       }
