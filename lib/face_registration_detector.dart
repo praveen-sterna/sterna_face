@@ -95,7 +95,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
       }else {
         _canProcess = false;
         _msg = "Perfect! Now, slightly Turn your head to right side";
-        _faceData.centerAngleInputImage = await FaceHelpers.convertNV21toImage(image, cameraLensDirection);
+        _faceData.centerAngleInputImage = FaceHelpers.convertNV21toImage(image, cameraLensDirection);
         _angle = FaceAngle.right;
         _canProcess = true;
       }
@@ -105,7 +105,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
       }else{
         _canProcess = false;
         _msg = "Perfect! Now, slightly Turn your head to left side";
-        _faceData.rightAngleInputImage = await FaceHelpers.convertNV21toImage(image, cameraLensDirection);
+        _faceData.rightAngleInputImage = FaceHelpers.convertNV21toImage(image, cameraLensDirection);
         _angle = FaceAngle.left;
         _canProcess = true;
       }
@@ -113,7 +113,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
       if((face.headEulerAngleY ?? 0.0) < 14 ){
         _msg = "Turn left";
       }else{
-        _faceData.leftAngleInputImage = await FaceHelpers.convertNV21toImage(image, cameraLensDirection);
+        _faceData.leftAngleInputImage = FaceHelpers.convertNV21toImage(image, cameraLensDirection);
         _msg = "Thank you! We have captured your face identity data.";
         await _dispose();
         _isCaptured = true;
