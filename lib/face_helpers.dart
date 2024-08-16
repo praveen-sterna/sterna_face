@@ -24,7 +24,7 @@ class FaceHelpers{
     return formattedTime;
   }
 
-  static Future<Uint8List> _convertBGRA8888ToImage(CameraImage image, CameraLensDirection lensDirection) async {
+  static Uint8List _convertBGRA8888ToImage(CameraImage image, CameraLensDirection lensDirection) {
     final int width = image.width;
     final int height = image.height;
     var img = img_lib.Image(width: width, height: height);
@@ -43,10 +43,10 @@ class FaceHelpers{
   }
 
 
-  static Future<Uint8List> convertNV21toImage(CameraImage image, CameraLensDirection lensDirection) async {
+  static Uint8List convertNV21toImage(CameraImage image, CameraLensDirection lensDirection) {
     try {
       if(Platform.isIOS){
-        return await _convertBGRA8888ToImage(image, lensDirection);
+        return _convertBGRA8888ToImage(image, lensDirection);
       }
       var width = image.width;
       var height = image.height;
