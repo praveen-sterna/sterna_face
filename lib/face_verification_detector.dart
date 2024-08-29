@@ -169,7 +169,7 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
             ),
             width: double.infinity,
             padding: const EdgeInsets.all(16),
-            child: Text(_msg, style: TextStyle(color: Colors.grey.shade900, fontWeight: FontWeight.w500, fontSize: 15, height: 1.8),textAlign: TextAlign.center,),
+            child: Text(_msg, style: TextStyle(color: Colors.grey.shade900, fontWeight: FontWeight.w400, fontSize: 14, height: 1.8),textAlign: TextAlign.center,),
           ),
         ),
       ],
