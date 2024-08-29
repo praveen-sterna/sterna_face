@@ -209,11 +209,11 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
               children: [
                 Visibility(
                     visible: _msg == _turnRight,
-                    child: const Icon(Icons.arrow_forward_rounded,size: 48,color: Colors.white,)
+                    child: const Icon(Icons.arrow_forward_rounded,size: 48,color: Colors.red,)
                 ),
                 Visibility(
                   visible: _msg == _turnLeft,
-                  child: const Icon(Icons.arrow_back_rounded,size: 48,color: Colors.white,),
+                  child: const Icon(Icons.arrow_back_rounded,size: 48,color: Colors.red,),
                 ),
               ],
             ),
