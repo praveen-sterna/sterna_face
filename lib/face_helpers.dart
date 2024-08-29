@@ -2,20 +2,10 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image/image.dart' as img_lib;
 import 'package:camera/camera.dart';
 
 class FaceHelpers{
-
-  static void showToast(String msg) {
-    Fluttertoast.showToast(
-        msg: msg,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.grey.shade200,
-        textColor: Colors.grey.shade700,
-        fontSize: 15);
-  }
 
   static String formatSecondsToMinutes(int seconds) {
     int minutes = seconds ~/ 60;

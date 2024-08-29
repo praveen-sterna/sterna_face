@@ -37,8 +37,12 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
   String _msg = "";
   bool _isCaptured = false;
   Timer? _timer;
-  int time = 300;
   final CameraLensDirection cameraLensDirection = CameraLensDirection.front;
+  final String _noFace = "No faces detected, Please adjust your position.";
+  final String _multipleFace = "Multiple faces detected, Please make sure only one person is in the frame.";
+  final String _turnLeft = "Please turn your head to the left side.";
+  final String _turnRight = "Please turn your head to the right side.";
+  final String _faceCaptured = "Thank you! We have captured your face identity data.";
 
   @override
   initState(){
@@ -48,14 +52,10 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
 
   void _startTimer(){
     _timer = Timer.periodic(const Duration(seconds: 1), (periodicTimer) {
-      if (time <= 0) {
+      if (periodicTimer.tick >= 300) {
         _timer?.cancel();
         periodicTimer.cancel();
-        FaceHelpers.showToast("Session expired");
         Navigator.pop(context);
-      } else {
-        time = 300 - periodicTimer.tick;
-        setState(() {});
       }
     });
   }
@@ -67,61 +67,62 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
         leftAngleInputImage: null
     );
     _startTimer();
-    _msg = "Hello ! Look straight on the camera";
+    _msg = "Hello! Please look straight at the camera.";
     _canProcess = true;
     setState(() {});
   }
 
   Future<void> faceNotFound() async{
-    _msg = "No faces found";
+    _msg = _noFace;
   }
 
   Future<void> multiFacesFound() async{
-    _msg = "Multiple faces found";
+    _msg = _multipleFace;
   }
 
   Future<void> faceFound(List<Face> faces, CameraImage image) async{
     if(faces.isEmpty)return;
     final face =  faces.first;
+    final headAngle = face.headEulerAngleY ?? 0.0;
     if((face.rightEyeOpenProbability ?? 0.0) < 0.5){
       _msg = "Open your left eye";
     }else if( (face.leftEyeOpenProbability ?? 0.0) < 0.5){
       _msg = "Open your right eye";
-    }else if(_angle == FaceAngle.center){
-      if((face.headEulerAngleY ?? 0.0) > 3 ){
-        _msg = "Turn right";
-      }else if( (face.headEulerAngleY ?? 0.0) < -3 ){
-        _msg = "Turn left";
-      }else {
+    }else if(_angle == FaceAngle.left) {
+      if(headAngle < 30){
+        _msg = _turnLeft;
+      }else{
         _canProcess = false;
         _msg = "Perfect! Now, slightly Turn your head to right side";
-        _faceData.centerAngleInputImage = FaceHelpers.convertNV21toImage(image, cameraLensDirection);
+        _faceData.leftAngleInputImage = FaceHelpers.convertNV21toImage(image, cameraLensDirection);
         _angle = FaceAngle.right;
         _canProcess = true;
       }
-    }else if(_angle == FaceAngle.right){
-      if((face.headEulerAngleY ?? 0.0) > -14 ){
-        _msg = "Turn right";
+    }else if(_angle == FaceAngle.right) {
+      if(headAngle > -30){
+        _msg = _turnRight;
       }else{
         _canProcess = false;
-        _msg = "Perfect! Now, slightly Turn your head to left side";
+        _msg = "Perfect! Now, Look straight at the camera";
         _faceData.rightAngleInputImage = FaceHelpers.convertNV21toImage(image, cameraLensDirection);
-        _angle = FaceAngle.left;
+        _angle = FaceAngle.center;
         _canProcess = true;
       }
-    }else if(_angle == FaceAngle.left) {
-      if((face.headEulerAngleY ?? 0.0) < 14 ){
-        _msg = "Turn left";
-      }else{
-        _faceData.leftAngleInputImage = FaceHelpers.convertNV21toImage(image, cameraLensDirection);
-        _msg = "Thank you! We have captured your face identity data.";
+    }else if(_angle == FaceAngle.center){
+      if(headAngle > 3 || headAngle < -3){
+        _msg = "Look straight at the camera";
+      }else {
+        _canProcess = false;
+        _msg = _faceCaptured;
+        _faceData.centerAngleInputImage = FaceHelpers.convertNV21toImage(image, cameraLensDirection);
         await _dispose();
         _isCaptured = true;
-        setState(() {});
         widget.onSuccess(_faceData);
+        setState(() {});
       }
     }
   }
+
 
   Future<void> _processImage(InputImage inputImage, CameraImage image) async {
     if (!_canProcess) return;
@@ -129,7 +130,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
     _isBusy = true;
     final faces = await _faceDetector.processImage(inputImage);
     if(faces.isEmpty){
-      if(_msg != "No faces found") {
+      if(_msg != _noFace) {
         faceNotFound();
       }
     }else if(faces.length > 1) {
@@ -193,33 +194,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
             ),
             width: double.infinity,
             padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Center(
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.grey.shade400,
-                        borderRadius: BorderRadius.circular(20)
-                    ),
-                    height: 4,
-                    width: 50,
-                  ),
-                ),
-                const SizedBox(height: 24,),
-                Text(_msg, style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 16, height: 1.8),textAlign: TextAlign.center,),
-                const SizedBox(height: 8,),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Your Session will expires in ", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300, fontSize: 13),),
-                    Text(FaceHelpers.formatSecondsToMinutes(time), style: const TextStyle(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 15),),
-                  ],
-                ),
-                const SizedBox(height: 8,),
-              ],
-            ),
+            child: Text(_msg, style: TextStyle(color: Colors.grey.shade900, fontWeight: FontWeight.w500, fontSize: 15, height: 1.8),textAlign: TextAlign.center,),
           ),
         ),
         Align(
@@ -231,12 +206,12 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Visibility(
-                    visible: _msg == "Turn right",
-                    child: const Icon(Icons.arrow_forward_rounded,size: 48,color: Colors.redAccent,)
+                    visible: _msg == _turnRight,
+                    child: const Icon(Icons.arrow_forward_rounded,size: 48,color: Colors.white,)
                 ),
                 Visibility(
-                  visible: _msg == "Turn left",
-                  child: const Icon(Icons.arrow_back_rounded,size: 48,color: Colors.redAccent,),
+                  visible: _msg == _turnLeft,
+                  child: const Icon(Icons.arrow_back_rounded,size: 48,color: Colors.white,),
                 ),
               ],
             ),
