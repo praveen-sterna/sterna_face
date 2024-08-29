@@ -34,6 +34,9 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
     rightAngleInputImage:  null,
     leftAngleInputImage: null
   );
+  CameraImage? _rightImage;
+  CameraImage? _leftImage;
+  CameraImage? _centerImage;
   String _msg = "";
   bool _isCaptured = false;
   Timer? _timer;
@@ -42,7 +45,6 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
   final String _multipleFace = "Multiple faces detected, Please make sure only one person is in the frame.";
   final String _turnLeft = "Please turn your head to the left side.";
   final String _turnRight = "Please turn your head to the right side.";
-  final String _faceCaptured = "Thank you! We have captured your face identity data.";
 
   @override
   initState(){
@@ -94,7 +96,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
       }else{
         _canProcess = false;
         _msg = "Perfect! Now, slightly Turn your head to right side";
-        _faceData.leftAngleInputImage = FaceHelpers.convertNV21toImage(image, cameraLensDirection);
+        _leftImage = image;
         _angle = FaceAngle.right;
         _canProcess = true;
       }
@@ -104,7 +106,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
       }else{
         _canProcess = false;
         _msg = "Perfect! Now, Look straight at the camera";
-        _faceData.rightAngleInputImage = FaceHelpers.convertNV21toImage(image, cameraLensDirection);
+        _rightImage = image;
         _angle = FaceAngle.center;
         _canProcess = true;
       }
@@ -113,12 +115,15 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
         _msg = "Look straight at the camera";
       }else {
         _canProcess = false;
-        _msg = _faceCaptured;
-        _faceData.centerAngleInputImage = FaceHelpers.convertNV21toImage(image, cameraLensDirection);
-        await _dispose();
         _isCaptured = true;
-        widget.onSuccess(_faceData);
+        _msg = "";
         setState(() {});
+        _centerImage = image;
+        _faceData.leftAngleInputImage = FaceHelpers.convertNV21toImage(_leftImage!, cameraLensDirection);
+        _faceData.rightAngleInputImage = FaceHelpers.convertNV21toImage(_rightImage!, cameraLensDirection);
+        _faceData.centerAngleInputImage = FaceHelpers.convertNV21toImage(_centerImage!, cameraLensDirection);
+        await _dispose();
+        widget.onSuccess(_faceData);
       }
     }
   }
@@ -130,13 +135,10 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
     _isBusy = true;
     final faces = await _faceDetector.processImage(inputImage);
     if(faces.isEmpty){
-      if(_msg != _noFace) {
-        faceNotFound();
-      }
+      faceNotFound();
     }else if(faces.length > 1) {
       multiFacesFound();
     }else{
-      debugPrint("-------face found------");
       faceFound(faces, image);
     }
     if (inputImage.metadata?.size != null && inputImage.metadata?.rotation != null) {

@@ -29,7 +29,7 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
   bool _canProcess = true;
   bool _isBusy = false;
   CustomPaint? _customPaint;
-  FaceData _faceData = FaceData(
+  final FaceData _faceData = FaceData(
       centerAngleInputImage: null,
       rightAngleInputImage:  null,
       leftAngleInputImage: null
@@ -40,7 +40,6 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
   final CameraLensDirection cameraLensDirection = CameraLensDirection.front;
   final String _noFace = "No faces detected, Please adjust your position.";
   final String _multipleFace = "Multiple faces detected, Please make sure only one person is in the frame.";
-  final String _faceCaptured = "Thank you! We have captured your face identity data.";
 
   @override
   initState(){
@@ -59,11 +58,6 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
   }
 
   Future<void> _init() async {
-    _faceData = FaceData(
-        centerAngleInputImage: null,
-        rightAngleInputImage:  null,
-        leftAngleInputImage: null
-    );
     _startTimer();
     _msg = "Hello! Please look straight at the camera.";
     _canProcess = true;
@@ -90,12 +84,12 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
       _msg = "Look straight at the camera";
     }else {
       _canProcess = false;
-      _msg = _faceCaptured;
+      _isCaptured = true;
+      _msg = "";
+      setState(() {});
       _faceData.centerAngleInputImage = FaceHelpers.convertNV21toImage(image, cameraLensDirection);
       await _dispose();
-      _isCaptured = true;
       widget.onSuccess(_faceData);
-      setState(() {});
     }
   }
 
@@ -105,13 +99,10 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
     _isBusy = true;
     final faces = await _faceDetector.processImage(inputImage);
     if(faces.isEmpty){
-      if(_msg != _noFace) {
-        faceNotFound();
-      }
+      faceNotFound();
     }else if(faces.length > 1) {
       multiFacesFound();
     }else{
-      debugPrint("-------face found------");
       faceFound(faces, image);
     }
     if (inputImage.metadata?.size != null && inputImage.metadata?.rotation != null) {
