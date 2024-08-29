@@ -25,7 +25,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
         minFaceSize: 1.0
     ),
   );
-  FaceAngle _angle = FaceAngle.center;
+  FaceAngle _angle = FaceAngle.left;
   bool _canProcess = true;
   bool _isBusy = false;
   CustomPaint? _customPaint;
