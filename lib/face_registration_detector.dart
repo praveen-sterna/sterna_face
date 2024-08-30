@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
@@ -92,7 +93,8 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
     }else if( (face.leftEyeOpenProbability ?? 0.0) < 0.5){
       _msg = "Open your right eye";
     }else if(_angle == FaceAngle.left) {
-      if(headAngle < 30){
+      double value = (Platform.isIOS) ? -30 : 30;
+      if(headAngle < value){
         _msg = _turnLeft;
       }else{
         _canProcess = false;
@@ -102,7 +104,8 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
         _canProcess = true;
       }
     }else if(_angle == FaceAngle.right) {
-      if(headAngle > -30){
+      double value = (Platform.isIOS) ? 30 : -30;
+      if(headAngle > value){
         _msg = _turnRight;
       }else{
         _canProcess = false;
