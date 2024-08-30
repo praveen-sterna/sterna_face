@@ -93,9 +93,10 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
     }else if( (face.leftEyeOpenProbability ?? 0.0) < 0.5){
       _msg = "Open your right eye";
     }else if(_angle == FaceAngle.left) {
-      double value = (Platform.isIOS) ? -30 : 30;
-      if(headAngle < value){
+      if(Platform.isIOS && headAngle < -30){
         _msg = _turnLeft;
+      }else if(Platform.isAndroid){
+
       }else{
         _canProcess = false;
         _msg = "Perfect! Now, slightly Turn your head to right side";
@@ -104,9 +105,10 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
         _canProcess = true;
       }
     }else if(_angle == FaceAngle.right) {
-      double value = (Platform.isIOS) ? 30 : -30;
-      if(headAngle > value){
+      if((Platform.isIOS) && headAngle < 30){
         _msg = _turnRight;
+      }else if(Platform.isAndroid){
+
       }else{
         _canProcess = false;
         _msg = "Perfect! Now, Look straight at the camera";
