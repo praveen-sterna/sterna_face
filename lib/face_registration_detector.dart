@@ -87,7 +87,6 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
     if(faces.isEmpty)return;
     final face =  faces.first;
     final headAngle = face.headEulerAngleY ?? 0.0;
-    print("headAngle: $headAngle");
     if((face.rightEyeOpenProbability ?? 0.0) < 0.5){
       _msg = "Open your left eye";
     }else if( (face.leftEyeOpenProbability ?? 0.0) < 0.5){
@@ -95,8 +94,8 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
     }else if(_angle == FaceAngle.left) {
       if(Platform.isIOS && headAngle > -45){
         _msg = _turnLeft;
-      }else if(Platform.isAndroid){
-
+      }else if(Platform.isAndroid && headAngle < 45){
+        _msg = _turnLeft;
       }else{
         _canProcess = false;
         _msg = "Perfect! Now, slightly Turn your head to right side";
@@ -107,8 +106,8 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
     }else if(_angle == FaceAngle.right) {
       if((Platform.isIOS) && headAngle < 45){
         _msg = _turnRight;
-      }else if(Platform.isAndroid){
-
+      }else if(Platform.isAndroid && headAngle > -45){
+        _msg = _turnRight;
       }else{
         _canProcess = false;
         _msg = "Perfect! Now, Look straight at the camera";
@@ -159,9 +158,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
       _customPaint = null;
     }
     _isBusy = false;
-    if (mounted) {
-      setState(() {});
-    }
+    setState(() {});
   }
 
   Future<void> _dispose() async{
