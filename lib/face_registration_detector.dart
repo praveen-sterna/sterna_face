@@ -99,48 +99,54 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
       if(cameraLensDirection == CameraLensDirection.back){
         if(Platform.isIOS && headAngle > 45){
           _msg = _turnLeft;
-          return;
         }else if(Platform.isAndroid && headAngle < -45){
           _msg = _turnLeft;
-          return;
+        }else{
+          _canProcess = false;
+          _msg = "Perfect! Now, slightly Turn your head to right side";
+          _leftImage = image;
+          _angle = FaceAngle.right;
+          _canProcess = true;
         }
       }else if(cameraLensDirection == CameraLensDirection.front){
         if(Platform.isIOS && headAngle > -45){
           _msg = _turnLeft;
-          return;
         }else if(Platform.isAndroid && headAngle < 45){
           _msg = _turnLeft;
-          return;
+        }else{
+          _canProcess = false;
+          _msg = "Perfect! Now, slightly Turn your head to right side";
+          _leftImage = image;
+          _angle = FaceAngle.right;
+          _canProcess = true;
         }
       }
-      _canProcess = false;
-      _msg = "Perfect! Now, slightly Turn your head to right side";
-      _leftImage = image;
-      _angle = FaceAngle.right;
-      _canProcess = true;
     }else if(_angle == FaceAngle.right) {
       if(cameraLensDirection == CameraLensDirection.back){
         if(Platform.isIOS && headAngle > -45){
           _msg = _turnRight;
-          return;
         }else if(Platform.isAndroid && headAngle < 45){
           _msg = _turnRight;
-          return;
+        }else{
+          _canProcess = false;
+          _msg = "Perfect! Now, Look straight at the camera";
+          _rightImage = image;
+          _angle = FaceAngle.center;
+          _canProcess = true;
         }
       }else if(cameraLensDirection == CameraLensDirection.front){
         if(Platform.isIOS && headAngle > 45){
           _msg = _turnRight;
-          return;
         }else if(Platform.isAndroid && headAngle < -45){
           _msg = _turnRight;
-          return;
+        }else{
+          _canProcess = false;
+          _msg = "Perfect! Now, Look straight at the camera";
+          _rightImage = image;
+          _angle = FaceAngle.center;
+          _canProcess = true;
         }
       }
-      _canProcess = false;
-      _msg = "Perfect! Now, Look straight at the camera";
-      _rightImage = image;
-      _angle = FaceAngle.center;
-      _canProcess = true;
     }else if(_angle == FaceAngle.center){
       if(headAngle > 3 || headAngle < -3){
         _msg = "Look straight at the camera";
