@@ -10,7 +10,8 @@ import 'face_detector_painter.dart';
 
 class FaceRegistrationDetectorView extends StatefulWidget {
   final Function(FaceData) onSuccess;
-  const FaceRegistrationDetectorView({super.key, required this.onSuccess});
+  final CameraLensDirection? lensDirection;
+  const FaceRegistrationDetectorView({super.key, required this.onSuccess, this.lensDirection});
 
   @override
   State<FaceRegistrationDetectorView> createState() => _FaceRegistrationDetectorViewState();
@@ -41,7 +42,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
   String _msg = "";
   bool _isCaptured = false;
   Timer? _timer;
-  final CameraLensDirection cameraLensDirection = CameraLensDirection.front;
+  CameraLensDirection cameraLensDirection = CameraLensDirection.front;
   final String _noFace = "No faces detected, Please adjust your position.";
   final String _multipleFace = "Multiple faces detected, Please make sure only one person is in the frame.";
   final String _turnLeft = "Please turn your head to the left side.";
@@ -49,6 +50,9 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
 
   @override
   initState(){
+    if(widget.lensDirection != null){
+      cameraLensDirection = widget.lensDirection!;
+    }
     _init();
     super.initState();
   }
@@ -92,11 +96,13 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
     }else if( (face.leftEyeOpenProbability ?? 0.0) < 0.5){
       _msg = "Open your right eye";
     }else if(_angle == FaceAngle.left) {
-      if(Platform.isIOS && headAngle > -45){
+      final leftThreshold = Platform.isIOS ? -45 : 45;
+      final shouldTurnLeft = cameraLensDirection == CameraLensDirection.back
+          ? (Platform.isIOS ? headAngle < leftThreshold : headAngle > leftThreshold)
+          : (Platform.isIOS ? headAngle > leftThreshold : headAngle < leftThreshold);
+      if(shouldTurnLeft){
         _msg = _turnLeft;
-      }else if(Platform.isAndroid && headAngle < 45){
-        _msg = _turnLeft;
-      }else{
+      } else{
         _canProcess = false;
         _msg = "Perfect! Now, slightly Turn your head to right side";
         _leftImage = image;
@@ -104,9 +110,11 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
         _canProcess = true;
       }
     }else if(_angle == FaceAngle.right) {
-      if((Platform.isIOS) && headAngle < 45){
-        _msg = _turnRight;
-      }else if(Platform.isAndroid && headAngle > -45){
+      final rightThreshold = Platform.isIOS ? 45 : -45;
+      final shouldTurnRight = cameraLensDirection == CameraLensDirection.back
+          ? (Platform.isIOS ? headAngle > rightThreshold : headAngle < rightThreshold)
+          : (Platform.isIOS ? headAngle < rightThreshold : headAngle > rightThreshold);
+      if(shouldTurnRight){
         _msg = _turnRight;
       }else{
         _canProcess = false;
