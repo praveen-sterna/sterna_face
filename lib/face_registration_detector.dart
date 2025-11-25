@@ -47,6 +47,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
   final String _multipleFace = "Multiple faces detected, Please make sure only one person is in the frame.";
   final String _turnLeft = "Please turn your head to the left side.";
   final String _turnRight = "Please turn your head to the right side.";
+  double _hangle = 0.0;
 
   @override
   initState(){
@@ -91,7 +92,10 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
     if(faces.isEmpty)return;
     final face =  faces.first;
     final headAngle = face.headEulerAngleY ?? 0.0;
-    if((face.rightEyeOpenProbability ?? 0.0) < 0.5){
+    setState(() {
+      _hangle = headAngle;
+    });
+    /*if((face.rightEyeOpenProbability ?? 0.0) < 0.5){
       _msg = "Open your left eye";
     }else if( (face.leftEyeOpenProbability ?? 0.0) < 0.5){
       _msg = "Open your right eye";
@@ -162,7 +166,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
         await _dispose();
         widget.onSuccess(_faceData);
       }
-    }
+    }*/
   }
 
 
@@ -191,6 +195,24 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
     }
     _isBusy = false;
     setState(() {});
+  }
+
+  void _changeCamera(){
+    _angle = FaceAngle.left;
+    _faceData = FaceData(
+        centerAngleInputImage: null,
+        rightAngleInputImage:  null,
+        leftAngleInputImage: null
+    );
+    _rightImage = null;
+    _leftImage = null;
+    _centerImage = null;
+    _msg = "";
+    _isCaptured = false;
+    _canProcess = true;
+    setState(() {
+      cameraLensDirection = (cameraLensDirection == CameraLensDirection.front) ? CameraLensDirection.back : CameraLensDirection.front;
+    });
   }
 
   Future<void> _dispose() async{
@@ -224,14 +246,39 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
         ),
         Align(
           alignment: Alignment.bottomCenter,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            child: Text(_msg, style: TextStyle(color: Colors.grey.shade900, fontWeight: FontWeight.w400, fontSize: 14, height: 1.8),textAlign: TextAlign.center,),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(56),
+                  ),
+                  height: 56,
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  child: Text("$_hangle", style: TextStyle(color: Colors.grey.shade900, fontWeight: FontWeight.w400, fontSize: 14, height: 1.8),textAlign: TextAlign.center,),
+                ),
+              ),
+              const SizedBox(width: 16,),
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: (){
+                  _changeCamera();
+                },
+                child: Container(
+                  height: 56,
+                  width: 56,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(56),
+                  ),
+                  alignment: Alignment.center,
+                  child: const Icon(Icons.camera_front_outlined, color: Colors.black,),
+                ),
+              )
+            ],
           ),
         ),
         Align(
