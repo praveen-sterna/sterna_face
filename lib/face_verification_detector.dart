@@ -9,8 +9,8 @@ import 'face_detector_painter.dart';
 
 class FaceVerificationDetectorView extends StatefulWidget {
   final Function(FaceData) onSuccess;
-  final CameraLensDirection? lensDirection;
-  const FaceVerificationDetectorView({super.key, required this.onSuccess, this.lensDirection});
+  final bool? isUseBackCamera;
+  const FaceVerificationDetectorView({super.key, required this.onSuccess, this.isUseBackCamera});
 
   @override
   State<FaceVerificationDetectorView> createState() => _FaceVerificationDetectorViewState();
@@ -43,8 +43,8 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
 
   @override
   initState(){
-    if(widget.lensDirection != null){
-      cameraLensDirection = widget.lensDirection!;
+    if(widget.isUseBackCamera ?? false){
+      cameraLensDirection = CameraLensDirection.back;
     }
     _init();
     super.initState();
