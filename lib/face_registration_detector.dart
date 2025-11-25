@@ -47,7 +47,6 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
   final String _multipleFace = "Multiple faces detected, Please make sure only one person is in the frame.";
   final String _turnLeft = "Please turn your head to the left side.";
   final String _turnRight = "Please turn your head to the right side.";
-  double headAngleValue = 0.0;
 
   @override
   initState(){
@@ -92,41 +91,56 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
     if(faces.isEmpty)return;
     final face =  faces.first;
     final headAngle = face.headEulerAngleY ?? 0.0;
-    setState(() {
-      headAngleValue = headAngle;
-    });
-    /*if((face.rightEyeOpenProbability ?? 0.0) < 0.5){
+    if((face.rightEyeOpenProbability ?? 0.0) < 0.5){
       _msg = "Open your left eye";
     }else if( (face.leftEyeOpenProbability ?? 0.0) < 0.5){
       _msg = "Open your right eye";
     }else if(_angle == FaceAngle.left) {
-      final leftThreshold = Platform.isIOS ? -45 : 45;
-      final shouldTurnLeft = cameraLensDirection == CameraLensDirection.back
-          ? (Platform.isIOS ? headAngle < leftThreshold : headAngle > leftThreshold)
-          : (Platform.isIOS ? headAngle > leftThreshold : headAngle < leftThreshold);
-      if(shouldTurnLeft){
-        _msg = _turnLeft;
-      } else{
-        _canProcess = false;
-        _msg = "Perfect! Now, slightly Turn your head to right side";
-        _leftImage = image;
-        _angle = FaceAngle.right;
-        _canProcess = true;
+      if(cameraLensDirection == CameraLensDirection.back){
+        if(Platform.isIOS && headAngle > 45){
+          _msg = _turnLeft;
+          return;
+        }else if(Platform.isAndroid && headAngle < -45){
+          _msg = _turnLeft;
+          return;
+        }
+      }else if(cameraLensDirection == CameraLensDirection.front){
+        if(Platform.isIOS && headAngle > -45){
+          _msg = _turnLeft;
+          return;
+        }else if(Platform.isAndroid && headAngle < 45){
+          _msg = _turnLeft;
+          return;
+        }
       }
+      _canProcess = false;
+      _msg = "Perfect! Now, slightly Turn your head to right side";
+      _leftImage = image;
+      _angle = FaceAngle.right;
+      _canProcess = true;
     }else if(_angle == FaceAngle.right) {
-      final rightThreshold = Platform.isIOS ? 45 : -45;
-      final shouldTurnRight = cameraLensDirection == CameraLensDirection.back
-          ? (Platform.isIOS ? headAngle > rightThreshold : headAngle < rightThreshold)
-          : (Platform.isIOS ? headAngle < rightThreshold : headAngle > rightThreshold);
-      if(shouldTurnRight){
-        _msg = _turnRight;
-      }else{
-        _canProcess = false;
-        _msg = "Perfect! Now, Look straight at the camera";
-        _rightImage = image;
-        _angle = FaceAngle.center;
-        _canProcess = true;
+      if(cameraLensDirection == CameraLensDirection.back){
+        if(Platform.isIOS && headAngle > -45){
+          _msg = _turnRight;
+          return;
+        }else if(Platform.isAndroid && headAngle < 45){
+          _msg = _turnRight;
+          return;
+        }
+      }else if(cameraLensDirection == CameraLensDirection.front){
+        if(Platform.isIOS && headAngle > 45){
+          _msg = _turnRight;
+          return;
+        }else if(Platform.isAndroid && headAngle < -45){
+          _msg = _turnRight;
+          return;
+        }
       }
+      _canProcess = false;
+      _msg = "Perfect! Now, Look straight at the camera";
+      _rightImage = image;
+      _angle = FaceAngle.center;
+      _canProcess = true;
     }else if(_angle == FaceAngle.center){
       if(headAngle > 3 || headAngle < -3){
         _msg = "Look straight at the camera";
@@ -142,7 +156,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
         await _dispose();
         widget.onSuccess(_faceData);
       }
-    }*/
+    }
   }
 
 
@@ -211,7 +225,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
             ),
             width: double.infinity,
             padding: const EdgeInsets.all(16),
-            child: Text("headAngleValue: $headAngleValue", style: TextStyle(color: Colors.grey.shade900, fontWeight: FontWeight.w400, fontSize: 14, height: 1.8),textAlign: TextAlign.center,),
+            child: Text(_msg, style: TextStyle(color: Colors.grey.shade900, fontWeight: FontWeight.w400, fontSize: 14, height: 1.8),textAlign: TextAlign.center,),
           ),
         ),
         Align(
