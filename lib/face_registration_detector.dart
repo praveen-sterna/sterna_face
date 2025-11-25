@@ -96,7 +96,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
     }else if( (face.leftEyeOpenProbability ?? 0.0) < 0.5){
       _msg = "Open your right eye";
     }else if(_angle == FaceAngle.left) {
-      if(cameraLensDirection == CameraLensDirection.back){
+      if(widget.isUseBackCamera ?? false){
         if(Platform.isIOS && headAngle > 45){
           _msg = _turnLeft;
         }else if(Platform.isAndroid && headAngle < -45){
@@ -108,7 +108,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
           _angle = FaceAngle.right;
           _canProcess = true;
         }
-      }else if(cameraLensDirection == CameraLensDirection.front){
+      }else{
         if(Platform.isIOS && headAngle > -45){
           _msg = _turnLeft;
         }else if(Platform.isAndroid && headAngle < 45){
@@ -122,7 +122,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
         }
       }
     }else if(_angle == FaceAngle.right) {
-      if(cameraLensDirection == CameraLensDirection.back){
+      if(widget.isUseBackCamera ?? false){
         if(Platform.isIOS && headAngle > -45){
           _msg = _turnRight;
         }else if(Platform.isAndroid && headAngle < 45){
@@ -134,7 +134,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
           _angle = FaceAngle.center;
           _canProcess = true;
         }
-      }else if(cameraLensDirection == CameraLensDirection.front){
+      }else{
         if(Platform.isIOS && headAngle > 45){
           _msg = _turnRight;
         }else if(Platform.isAndroid && headAngle < -45){
