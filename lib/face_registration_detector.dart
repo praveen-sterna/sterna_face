@@ -47,6 +47,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
   final String _multipleFace = "Multiple faces detected, Please make sure only one person is in the frame.";
   final String _turnLeft = "Please turn your head to the left side.";
   final String _turnRight = "Please turn your head to the right side.";
+  double headAngleValue = 0.0;
 
   @override
   initState(){
@@ -91,7 +92,9 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
     if(faces.isEmpty)return;
     final face =  faces.first;
     final headAngle = face.headEulerAngleY ?? 0.0;
-    debugPrint("headAngle: $headAngle");
+    setState(() {
+      headAngleValue = headAngle;
+    });
     return;
     if((face.rightEyeOpenProbability ?? 0.0) < 0.5){
       _msg = "Open your left eye";
@@ -220,6 +223,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                Text("headAngleValue: $headAngleValue"),
                 Visibility(
                     visible: _msg == _turnRight,
                     child: const Icon(Icons.arrow_forward_rounded,size: 48,color: Colors.red,)
