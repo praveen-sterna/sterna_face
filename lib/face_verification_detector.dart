@@ -9,7 +9,8 @@ import 'face_detector_painter.dart';
 
 class FaceVerificationDetectorView extends StatefulWidget {
   final Function(FaceData) onSuccess;
-  const FaceVerificationDetectorView({super.key, required this.onSuccess});
+  final CameraLensDirection? lensDirection;
+  const FaceVerificationDetectorView({super.key, required this.onSuccess, this.lensDirection});
 
   @override
   State<FaceVerificationDetectorView> createState() => _FaceVerificationDetectorViewState();
@@ -36,12 +37,15 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
   String _msg = "";
   bool _isCaptured = false;
   Timer? _timer;
-  final CameraLensDirection cameraLensDirection = CameraLensDirection.front;
+  CameraLensDirection cameraLensDirection = CameraLensDirection.front;
   final String _noFace = "No faces detected, Please adjust your position.";
   final String _multipleFace = "Multiple faces detected, Please make sure only one person is in the frame.";
 
   @override
   initState(){
+    if(widget.lensDirection != null){
+      cameraLensDirection = widget.lensDirection!;
+    }
     _init();
     super.initState();
   }
