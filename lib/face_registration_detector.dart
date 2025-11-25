@@ -95,8 +95,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
     setState(() {
       headAngleValue = headAngle;
     });
-    return;
-    if((face.rightEyeOpenProbability ?? 0.0) < 0.5){
+    /*if((face.rightEyeOpenProbability ?? 0.0) < 0.5){
       _msg = "Open your left eye";
     }else if( (face.leftEyeOpenProbability ?? 0.0) < 0.5){
       _msg = "Open your right eye";
@@ -143,7 +142,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
         await _dispose();
         widget.onSuccess(_faceData);
       }
-    }
+    }*/
   }
 
 
@@ -212,7 +211,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
             ),
             width: double.infinity,
             padding: const EdgeInsets.all(16),
-            child: Text(_msg, style: TextStyle(color: Colors.grey.shade900, fontWeight: FontWeight.w400, fontSize: 14, height: 1.8),textAlign: TextAlign.center,),
+            child: Text("headAngleValue: $headAngleValue", style: TextStyle(color: Colors.grey.shade900, fontWeight: FontWeight.w400, fontSize: 14, height: 1.8),textAlign: TextAlign.center,),
           ),
         ),
         Align(
@@ -223,7 +222,6 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text("headAngleValue: $headAngleValue"),
                 Visibility(
                     visible: _msg == _turnRight,
                     child: const Icon(Icons.arrow_forward_rounded,size: 48,color: Colors.red,)
