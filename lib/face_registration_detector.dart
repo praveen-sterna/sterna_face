@@ -10,8 +10,7 @@ import 'face_detector_painter.dart';
 
 class FaceRegistrationDetectorView extends StatefulWidget {
   final Function(FaceData) onSuccess;
-  final bool? isUseBackCamera;
-  const FaceRegistrationDetectorView({super.key, required this.onSuccess, this.isUseBackCamera});
+  const FaceRegistrationDetectorView({super.key, required this.onSuccess});
 
   @override
   State<FaceRegistrationDetectorView> createState() => _FaceRegistrationDetectorViewState();
@@ -32,9 +31,9 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
   bool _isBusy = false;
   CustomPaint? _customPaint;
   FaceData _faceData = FaceData(
-    centerAngleInputImage: null,
-    rightAngleInputImage:  null,
-    leftAngleInputImage: null
+      centerAngleInputImage: null,
+      rightAngleInputImage:  null,
+      leftAngleInputImage: null
   );
   CameraImage? _rightImage;
   CameraImage? _leftImage;
@@ -42,18 +41,14 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
   String _msg = "";
   bool _isCaptured = false;
   Timer? _timer;
-  CameraLensDirection cameraLensDirection = CameraLensDirection.front;
+  final CameraLensDirection cameraLensDirection = CameraLensDirection.front;
   final String _noFace = "No faces detected, Please adjust your position.";
   final String _multipleFace = "Multiple faces detected, Please make sure only one person is in the frame.";
   final String _turnLeft = "Please turn your head to the left side.";
   final String _turnRight = "Please turn your head to the right side.";
-  double _hangle = 0.0;
 
   @override
   initState(){
-    if(widget.isUseBackCamera ?? false){
-      cameraLensDirection = CameraLensDirection.back;
-    }
     _init();
     super.initState();
   }
@@ -92,64 +87,33 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
     if(faces.isEmpty)return;
     final face =  faces.first;
     final headAngle = face.headEulerAngleY ?? 0.0;
-    setState(() {
-      _hangle = headAngle;
-    });
-    /*if((face.rightEyeOpenProbability ?? 0.0) < 0.5){
+    if((face.rightEyeOpenProbability ?? 0.0) < 0.5){
       _msg = "Open your left eye";
     }else if( (face.leftEyeOpenProbability ?? 0.0) < 0.5){
       _msg = "Open your right eye";
     }else if(_angle == FaceAngle.left) {
-      if(widget.isUseBackCamera ?? false){
-        if(Platform.isIOS && headAngle > 45){
-          _msg = _turnLeft;
-        }else if(Platform.isAndroid && headAngle < -45){
-          _msg = _turnLeft;
-        }else{
-          _canProcess = false;
-          _msg = "Perfect! Now, slightly Turn your head to right side";
-          _leftImage = image;
-          _angle = FaceAngle.right;
-          _canProcess = true;
-        }
+      if(Platform.isIOS && headAngle > -45){
+        _msg = _turnLeft;
+      }else if(Platform.isAndroid && headAngle < 45){
+        _msg = _turnLeft;
       }else{
-        if(Platform.isIOS && headAngle > -45){
-          _msg = _turnLeft;
-        }else if(Platform.isAndroid && headAngle < 45){
-          _msg = _turnLeft;
-        }else{
-          _canProcess = false;
-          _msg = "Perfect! Now, slightly Turn your head to right side";
-          _leftImage = image;
-          _angle = FaceAngle.right;
-          _canProcess = true;
-        }
+        _canProcess = false;
+        _msg = "Perfect! Now, slightly Turn your head to right side";
+        _leftImage = image;
+        _angle = FaceAngle.right;
+        _canProcess = true;
       }
     }else if(_angle == FaceAngle.right) {
-      if(widget.isUseBackCamera ?? false){
-        if(Platform.isIOS && headAngle > -45){
-          _msg = _turnRight;
-        }else if(Platform.isAndroid && headAngle < 45){
-          _msg = _turnRight;
-        }else{
-          _canProcess = false;
-          _msg = "Perfect! Now, Look straight at the camera";
-          _rightImage = image;
-          _angle = FaceAngle.center;
-          _canProcess = true;
-        }
+      if((Platform.isIOS) && headAngle < 45){
+        _msg = _turnRight;
+      }else if(Platform.isAndroid && headAngle > -45){
+        _msg = _turnRight;
       }else{
-        if(Platform.isIOS && headAngle > 45){
-          _msg = _turnRight;
-        }else if(Platform.isAndroid && headAngle < -45){
-          _msg = _turnRight;
-        }else{
-          _canProcess = false;
-          _msg = "Perfect! Now, Look straight at the camera";
-          _rightImage = image;
-          _angle = FaceAngle.center;
-          _canProcess = true;
-        }
+        _canProcess = false;
+        _msg = "Perfect! Now, Look straight at the camera";
+        _rightImage = image;
+        _angle = FaceAngle.center;
+        _canProcess = true;
       }
     }else if(_angle == FaceAngle.center){
       if(headAngle > 3 || headAngle < -3){
@@ -166,7 +130,7 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
         await _dispose();
         widget.onSuccess(_faceData);
       }
-    }*/
+    }
   }
 
 
@@ -195,24 +159,6 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
     }
     _isBusy = false;
     setState(() {});
-  }
-
-  void _changeCamera(){
-    _angle = FaceAngle.left;
-    _faceData = FaceData(
-        centerAngleInputImage: null,
-        rightAngleInputImage:  null,
-        leftAngleInputImage: null
-    );
-    _rightImage = null;
-    _leftImage = null;
-    _centerImage = null;
-    _msg = "";
-    _isCaptured = false;
-    _canProcess = true;
-    setState(() {
-      cameraLensDirection = (cameraLensDirection == CameraLensDirection.front) ? CameraLensDirection.back : CameraLensDirection.front;
-    });
   }
 
   Future<void> _dispose() async{
@@ -246,39 +192,14 @@ class _FaceRegistrationDetectorViewState extends State<FaceRegistrationDetectorV
         ),
         Align(
           alignment: Alignment.bottomCenter,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(56),
-                  ),
-                  height: 56,
-                  width: double.infinity,
-                  alignment: Alignment.center,
-                  child: Text("$_hangle", style: TextStyle(color: Colors.grey.shade900, fontWeight: FontWeight.w400, fontSize: 14, height: 1.8),textAlign: TextAlign.center,),
-                ),
-              ),
-              const SizedBox(width: 16,),
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: (){
-                  _changeCamera();
-                },
-                child: Container(
-                  height: 56,
-                  width: 56,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(56),
-                  ),
-                  alignment: Alignment.center,
-                  child: const Icon(Icons.camera_front_outlined, color: Colors.black,),
-                ),
-              )
-            ],
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            child: Text(_msg, style: TextStyle(color: Colors.grey.shade900, fontWeight: FontWeight.w400, fontSize: 14, height: 1.8),textAlign: TextAlign.center,),
           ),
         ),
         Align(
