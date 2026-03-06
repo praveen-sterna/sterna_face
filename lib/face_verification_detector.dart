@@ -82,7 +82,9 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
     _isBlinked = leftEyeOpen < _closedThreshold && rightEyeOpen < _closedThreshold;
     if(!_isBlinked){
       _msg = "Blink your eyes";
-    }else if(rightEyeOpen < 0.5){
+      return;
+    }
+    if(rightEyeOpen < 0.5){
       _msg = "Open your left eye";
     }else if(leftEyeOpen < 0.5){
       _msg = "Open your right eye";
