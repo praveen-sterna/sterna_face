@@ -39,6 +39,8 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
   final CameraLensDirection cameraLensDirection = CameraLensDirection.front;
   final String _noFace = "No faces detected, Please adjust your position.";
   final String _multipleFace = "Multiple faces detected, Please make sure only one person is in the frame.";
+  bool _isBlinked = false;
+  final double _closedThreshold = 0.3;
 
   @override
   initState(){
@@ -75,9 +77,14 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
     if(faces.isEmpty)return;
     final face = faces.first;
     final headAngle = face.headEulerAngleY ?? 0.0;
-    if((face.rightEyeOpenProbability ?? 0.0) < 0.5){
+    final leftEyeOpen = face.leftEyeOpenProbability ?? 0.0;
+    final rightEyeOpen = face.rightEyeOpenProbability ?? 0.0;
+    _isBlinked = leftEyeOpen < _closedThreshold && rightEyeOpen < _closedThreshold;
+    if(!_isBlinked){
+      _msg = "Blink your eyes";
+    }else if(rightEyeOpen < 0.5){
       _msg = "Open your left eye";
-    }else if( (face.leftEyeOpenProbability ?? 0.0) < 0.5){
+    }else if(leftEyeOpen < 0.5){
       _msg = "Open your right eye";
     }else if(headAngle > 3 || headAngle < -3){
       _msg = "Look straight at the camera";
