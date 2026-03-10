@@ -79,10 +79,12 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
     final headAngle = face.headEulerAngleY ?? 0.0;
     final leftEyeOpen = face.leftEyeOpenProbability ?? 0.0;
     final rightEyeOpen = face.rightEyeOpenProbability ?? 0.0;
-    _isBlinked = leftEyeOpen < _closedThreshold && rightEyeOpen < _closedThreshold;
     if(!_isBlinked){
-      _msg = "Blink your eyes";
-      return;
+      _isBlinked = leftEyeOpen < _closedThreshold && rightEyeOpen < _closedThreshold;
+      if(!_isBlinked){
+        _msg = "Blink your eyes";
+        return;
+      }
     }
     if(rightEyeOpen < 0.5){
       _msg = "Open your left eye";
