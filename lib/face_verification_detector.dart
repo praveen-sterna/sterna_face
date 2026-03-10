@@ -40,9 +40,9 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
   final String _noFace = "No faces detected, Please adjust your position.";
   final String _multipleFace = "Multiple faces detected, Please make sure only one person is in the frame.";
   bool _isBlinked = false;
-  int _closedFrameCount = 0;
-  final int _requiredClosedFrames = 3;
+  bool _eyesWereOpen = false;
   final double _closedThreshold = 0.3;
+  final double _openThreshold = 0.7;
 
   @override
   initState(){
@@ -82,11 +82,10 @@ class _FaceVerificationDetectorViewState extends State<FaceVerificationDetectorV
     final leftEyeOpen = face.leftEyeOpenProbability ?? 0.0;
     final rightEyeOpen = face.rightEyeOpenProbability ?? 0.0;
     if(!_isBlinked){
-      if(leftEyeOpen < _closedThreshold && rightEyeOpen < _closedThreshold){
-        _closedFrameCount++;
-        _isBlinked = _closedFrameCount >= _requiredClosedFrames;
-      }else{
-        _closedFrameCount = 0;
+      if(!_eyesWereOpen){
+        _eyesWereOpen = leftEyeOpen > _openThreshold && rightEyeOpen > _openThreshold;
+      }else if(leftEyeOpen < _closedThreshold && rightEyeOpen < _closedThreshold){
+        _isBlinked = true;
       }
       if(!_isBlinked){
         _msg = "Blink your eyes";
